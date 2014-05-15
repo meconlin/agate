@@ -1,0 +1,16 @@
+{
+  "name": "agate",
+  "version": "0.0.1",
+  "description": "Antigate client that doesn't suck",
+  "keywords": [
+    "CAPTCHA", "antigate", "recognize", "ocr"
+  ],
+  "main": "agate.js",
+  "author": "jsmarkus <me@jsman.ru>",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "urllib": "~0.5.15",
+    "q": "~1.0.1",
+    "debug": "~0.8.1"
+  }
+}
