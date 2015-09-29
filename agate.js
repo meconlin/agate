@@ -9,6 +9,7 @@ var readFile = Q.denodeify(fs.readFile);
 
 var U_IN = 'http://antigate.com/in.php';
 var U_STATUS = 'http://antigate.com/res.php';
+var U_REPORTBAD = 'http://antigate.com/res.php';
 
 function Agate(key) {
   this.key = key;
@@ -20,11 +21,19 @@ Agate.prototype.recognizeFile = function(fileName) {
     .then(this.recognizeBase64.bind(this));
 };
 
+Agate.prototype.reportBadCaptcha = function(id) {
+  return reportBad(this.key, id)
+    .then(function(result) {
+        return result;
+    });
+};
+
 Agate.prototype.recognizeBase64 = function(base64Str) {
   return uploadBase64(this.key, base64Str)
     .then(sleep(5000))
     .then(checkLoop.bind(null, this.key));
 };
+
 
 var request = Q.denodeify(function(url, options, next) {
   urllib.request(url, options, function(err, data, res) {
@@ -34,7 +43,6 @@ var request = Q.denodeify(function(url, options, next) {
     next(err, res);
   });
 });
-
 
 function checkLoop(key, id) {
   debug(format('checkLoop(%s,%s)', key, id));
@@ -48,7 +56,7 @@ function checkLoop(key, id) {
           i++;
           return iterate(key, id);
         } else {
-          return result;
+          return {answer: result, id: id};
         }
       });
   }
@@ -68,6 +76,18 @@ function uploadBase64(key, base64Str) {
       method: 'base64',
       key: key,
       body: base64Str
+    }
+  }).then(parseResponse);
+}
+
+function reportBad(key, id) {
+  debug(format('reportBad(%s,%s)', key, id));
+  return request(U_REPORTBAD, {
+    method: 'GET',
+    data: {
+      action: 'reportbad',
+      key: key,
+      id: id
     }
   }).then(parseResponse);
 }

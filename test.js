@@ -24,3 +24,13 @@ function testFile() {
 		.then(console.log)
 		.done();
 }
+
+function testBadCaptcha() {
+	ag.recognizeFile(FILE)
+		.then(function(results){
+				console.log(results);
+				ag.reportBadCaptcha(results.id)
+					.then(console.log);
+			}
+		)
+}
