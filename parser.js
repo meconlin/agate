@@ -47,6 +47,9 @@ function parse(body) {
   if (body === 'CAPCHA_NOT_READY') {
     return false;
   }
+  if (body === 'OK_REPORT_RECORDED') {
+    return true;
+  }
   if (body.match(/^ERROR_/)) {
     throw protocolError(body);
   }
